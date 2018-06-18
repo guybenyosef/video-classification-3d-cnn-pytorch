@@ -62,7 +62,7 @@ if __name__ == '__main__':
             scores /= n_elements
             indx_cls_max_score = np.argmax(scores)
             cls_max_score = ''
-            if indx_cls_max_score in slip_and_fall:
+            if indx_cls_max_score in fight_classes: #slip_and_fall:
                 cls_max_score = class_names[indx_cls_max_score]
             unit_classes.append(cls_max_score)
             unit_segments.append([clips[i]['segment'][0],
