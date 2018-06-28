@@ -5,8 +5,8 @@ import subprocess
 import numpy as np
 from PIL import Image, ImageDraw, ImageFont
 
-fight_classes = [18-1,21-1,22-1,28-1,29-1,37-1,45-1,46-1]
-slip_and_fall = [13-1]
+fight_classes_51c = [9-1,14-1,18-1,21-1,22-1,28-1,29-1,37-1,45-1,46-1]
+slip_and_fall_51c = [13-1]
 
 def get_fps(video_file_path, frames_directory_path):
     p = subprocess.Popen('ffprobe {}'.format(video_file_path),
@@ -62,7 +62,7 @@ if __name__ == '__main__':
             scores /= n_elements
             indx_cls_max_score = np.argmax(scores)
             cls_max_score = ''
-            if indx_cls_max_score in fight_classes: #slip_and_fall:
+            if indx_cls_max_score in fight_classes_51c: #fight_classes_51c: #slip_and_fall_51c:
                 cls_max_score = class_names[indx_cls_max_score]
             unit_classes.append(cls_max_score)
             unit_segments.append([clips[i]['segment'][0],
@@ -94,8 +94,8 @@ if __name__ == '__main__':
               #  d.rectangle(rect_position, fill=(30, 30, 30))
                # d.text((x + x_offset, y + y_offset), unit_classes[i],font=font, fill=(235, 235, 235))
                 if len(unit_classes[i])>0:
-                    d.text((x + x_offset, y + y_offset), (" *** %s ! *** "% unit_classes[i]), (255, 0, 255), font=font)
-                
+               #     d.text((x + x_offset, y + y_offset), (" *** %s ! *** "% unit_classes[i]), (255, 0, 255), font=font)
+                    d.text((x + x_offset, y + y_offset), (" *** Fight ! *** "), (255, 0, 255), font=font)
                 image.save('tmp2/image_{:05}_pred.jpg'.format(j))
 
         dst_file_path = os.path.join(dst_directory_path, video_path.split('/')[-1])
