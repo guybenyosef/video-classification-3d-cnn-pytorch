@@ -17,7 +17,12 @@ if __name__=="__main__":
     opt.arch = '{}-{}'.format(opt.model_name, opt.model_depth)
     opt.sample_size = 112
     opt.sample_duration = 16
-    opt.n_classes = 51 #400
+    # for Kinetics 400:
+    opt.n_classes = 400
+    opt.class_names_list_file = 'class_names_list'
+    # for HMDB51:
+    opt.n_classes = 51  # 51 #400
+    opt.class_names_list_file = 'class_names_list_HMDB51'
 
     model = generate_model(opt)
     print('loading model {}'.format(opt.model))
@@ -34,7 +39,7 @@ if __name__=="__main__":
             input_files.append(row[:-1])
 
     class_names = []
-    with open('class_names_list') as f:
+    with open(opt.class_names_list_file) as f:
         for row in f:
             class_names.append(row[:-1])
 
