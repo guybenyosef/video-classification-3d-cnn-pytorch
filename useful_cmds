@@ -3,3 +3,6 @@ python main.py --input ./input --video_root ./../../Interactions/data/ --output 
 
 # generate tags:
 python generate_result_video/generate_result_video.py ./output.json ../../Interactions/data/ ./generate_result_video/videos_pred class_names_list 5
+
+# generating gif:
+ffmpeg -i _zazCBo7Ppk_000010_000020.mp4 -framerate 5 _zazCBo7Ppk_000010_000020.gif
