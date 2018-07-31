@@ -83,9 +83,8 @@ if __name__ == '__main__':
                 image = Image.open('tmp2/image_{:05}.jpg'.format(j)).convert('RGB')
                 min_length = min(image.size)
                 font_size = int(min_length * 0.10) # int(min_length * 0.05)
-                font = ImageFont.truetype(os.path.join(os.path.dirname(__file__),
-                                                       'SourceSansPro-Regular.ttf'),
-                                          font_size)
+                # font = ImageFont.truetype(os.path.join(os.path.dirname(__file__),'SourceSansPro-Regular.ttf'),font_size)
+                font = ImageFont.truetype(os.path.join(os.path.dirname(__file__), 'CourierNew.ttf'),font_size)
                 d = ImageDraw.Draw(image)
                 textsize = d.textsize(unit_classes[i], font=font)
                 x = int(font_size * 0.5)
@@ -96,7 +95,9 @@ if __name__ == '__main__':
                # d.text((x + x_offset, y + y_offset), unit_classes[i],font=font, fill=(235, 235, 235))
                 if len(unit_classes[i])>0:
                     d.rectangle(rect_position, fill=(220, 220, 220))
-                    d.text((x + x_offset, y + y_offset), (" Fight ! (%02d%%)" %unit_max_scores[i]), (73, 59, 59), font=font)
+                    #d.text((x + x_offset, y + y_offset), ("Fight! [%02d%%]" %unit_max_scores[i]), (73, 59, 59), font=font)
+                    d.text((x + x_offset, y + y_offset), ("Fight" % unit_max_scores[i]), (73, 59, 59),
+                           font=font)
                     #d.text((x + x_offset, y + y_offset), (" *** %s ! *** " % unit_classes[i]), (255, 0, 255), font=font)
 
                 image.save('tmp2/image_{:05}_pred.jpg'.format(j))
