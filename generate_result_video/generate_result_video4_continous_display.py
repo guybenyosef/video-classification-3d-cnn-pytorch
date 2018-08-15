@@ -4,6 +4,8 @@ import json
 import subprocess
 import numpy as np
 from PIL import Image, ImageDraw, ImageFont
+import math
+import pdb
 
 fight_classes_51c = [9-1,14-1,18-1,21-1,22-1,28-1,29-1,37-1,45-1,46-1]
 slip_and_fall_51c = [13-1]
@@ -48,9 +50,11 @@ if __name__ == '__main__':
         print(video_path)
 
         clips = results[index]['clips']
+        #pdb.set_trace()
         unit_max_scores = []
         unit_classes = []
         unit_segments = []
+        unit_max_scores_from_fight_inds = []
         if temporal_unit == 0:
             unit = len(clips)
         else:
@@ -61,12 +65,16 @@ if __name__ == '__main__':
             for j in range(i, min(i + unit, len(clips))):
                 scores += np.array(clips[i]['scores'])
             scores /= n_elements
+            scores = (scores - min(scores)) / (max(scores) - min(scores))
             indx_cls_max_score = np.argmax(scores)
+            indx_cls_max_score_from_fight_inds = np.argmax(scores[fight_classes_51c])
             cls_max_score = ''
             if indx_cls_max_score in fight_classes_51c: #fight_classes_51c: #slip_and_fall_51c:
                 cls_max_score = class_names[indx_cls_max_score]
             unit_classes.append(cls_max_score)
             unit_max_scores.append(np.max(scores))
+            print(scores)
+            unit_max_scores_from_fight_inds.append(scores[indx_cls_max_score_from_fight_inds])
             unit_segments.append([clips[i]['segment'][0],
                                   clips[i + n_elements - 1]['segment'][1]])
 
@@ -86,19 +94,26 @@ if __name__ == '__main__':
                 # font = ImageFont.truetype(os.path.join(os.path.dirname(__file__),'SourceSansPro-Regular.ttf'),font_size)
                 font = ImageFont.truetype(os.path.join(os.path.dirname(__file__), 'CourierNew.ttf'),font_size)
                 d = ImageDraw.Draw(image)
-                textsize = d.textsize(unit_classes[i], font=font)
+                #textsize = d.textsize(unit_classes[i], font=font) # option 1
+                #textsize = d.textsize(" Fight XXXXXXX", font=font) # option 2
+                textsize = d.textsize("XXXXXXXX", font=font) # option 3
                 x = int(font_size * 0.5)
                 y = int(font_size * 0.25)
                 x_offset = x
                 y_offset = y
-                rect_position = (x, y, x + textsize[0] + x_offset * 2,y + textsize[1] + y_offset * 2)
+                rect_position = (x, y, x + textsize[0] + x_offset * 2,y + textsize[1] + y_offset * 3)
                # d.text((x + x_offset, y + y_offset), unit_classes[i],font=font, fill=(235, 235, 235))
+                d.rectangle(rect_position, fill=(220, 220, 220))
                 if len(unit_classes[i])>0:
-                    d.rectangle(rect_position, fill=(220, 220, 220))
-                    #d.text((x + x_offset, y + y_offset), ("Fight! [%02d%%]" %unit_max_scores[i]), (73, 59, 59), font=font)
-                    d.text((x + x_offset, y + y_offset), ("Fight" % unit_max_scores[i]), (73, 59, 59),
-                           font=font)
-                    #d.text((x + x_offset, y + y_offset), (" *** %s ! *** " % unit_classes[i]), (255, 0, 255), font=font)
+                    m_score = 100*(1 / (1 + math.e ** -unit_max_scores[i]))
+                    m_score = 100 * unit_max_scores_from_fight_inds[i]
+                else:
+                    #m_score = 100 * (1 / (1 + math.e ** -unit_max_scores_from_fight_inds[i]))
+                    m_score = 100 * unit_max_scores_from_fight_inds[i]
+                if(m_score>40):
+                    d.text((x + x_offset, y + y_offset), ("[%.2f%%]" % m_score), (220, 20, 60), font=font)  # option 3
+                else:
+                    d.text((x + x_offset, y + y_offset), ("[%.2f%%]" % m_score), (73, 59, 59), font=font)  # option 3
 
                 image.save('tmp2/image_{:05}_pred.jpg'.format(j))
 
