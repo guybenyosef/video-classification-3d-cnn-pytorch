@@ -1,3 +1,4 @@
+#!/usr/bin/env bash
 python main.py --input ./input --video_root ./../../Interactions/data/ --output ./output.json --model /storage/gby/models/C3Ds/resnext-101-kinetics.pth --resnet_shortcut B --mode score --batch_size 6 --model_depth 101 --model_name resnext
 
  # aws:
