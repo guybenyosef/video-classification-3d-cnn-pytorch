@@ -113,8 +113,7 @@ if __name__ == '__main__':
                 else:
                     #m_score = 100 * (1 / (1 + math.e ** -unit_max_scores_from_fight_inds[i]))
                     m_score = 100 * unit_max_scores_from_fight_inds[i]
-		#pdb.set_trace()
-		#m_score = 100 * scores[23-1]
+                m_score = 100 * scores[23-1]
                 if(m_score>40):
                     d.text((x + x_offset, y + y_offset), ("[%.2f%%]" % m_score), (220, 20, 60), font=font)  # option 3
                 else:
