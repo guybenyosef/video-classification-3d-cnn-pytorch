@@ -9,6 +9,9 @@ import pdb
 
 fight_classes_51c = [9-1,14-1,18-1,21-1,22-1,28-1,29-1,37-1,45-1,46-1]
 slip_and_fall_51c = [13-1]
+kiss_hug_51c = [23-1]#[19-1,23-1]
+alert_text = "XXXXXXXX"
+target_classes = kiss_hug_51c
 
 def get_fps(video_file_path, frames_directory_path):
     p = subprocess.Popen('ffprobe {}'.format(video_file_path),
@@ -67,9 +70,9 @@ if __name__ == '__main__':
             scores /= n_elements
             scores = (scores - min(scores)) / (max(scores) - min(scores))
             indx_cls_max_score = np.argmax(scores)
-            indx_cls_max_score_from_fight_inds = np.argmax(scores[fight_classes_51c])
+            indx_cls_max_score_from_fight_inds = np.argmax(scores[target_classes])
             cls_max_score = ''
-            if indx_cls_max_score in fight_classes_51c: #fight_classes_51c: #slip_and_fall_51c:
+            if indx_cls_max_score in target_classes: #fight_classes_51c: #fight_classes_51c: #slip_and_fall_51c:
                 cls_max_score = class_names[indx_cls_max_score]
             unit_classes.append(cls_max_score)
             unit_max_scores.append(np.max(scores))
@@ -96,7 +99,7 @@ if __name__ == '__main__':
                 d = ImageDraw.Draw(image)
                 #textsize = d.textsize(unit_classes[i], font=font) # option 1
                 #textsize = d.textsize(" Fight XXXXXXX", font=font) # option 2
-                textsize = d.textsize("XXXXXXXX", font=font) # option 3
+                textsize = d.textsize(alert_text, font=font) # option 3
                 x = int(font_size * 0.5)
                 y = int(font_size * 0.25)
                 x_offset = x
@@ -105,11 +108,13 @@ if __name__ == '__main__':
                # d.text((x + x_offset, y + y_offset), unit_classes[i],font=font, fill=(235, 235, 235))
                 d.rectangle(rect_position, fill=(220, 220, 220))
                 if len(unit_classes[i])>0:
-                    m_score = 100*(1 / (1 + math.e ** -unit_max_scores[i]))
+                   # m_score = 100*(1 / (1 + math.e ** -unit_max_scores[i]))
                     m_score = 100 * unit_max_scores_from_fight_inds[i]
                 else:
                     #m_score = 100 * (1 / (1 + math.e ** -unit_max_scores_from_fight_inds[i]))
                     m_score = 100 * unit_max_scores_from_fight_inds[i]
+		#pdb.set_trace()
+		#m_score = 100 * scores[23-1]
                 if(m_score>40):
                     d.text((x + x_offset, y + y_offset), ("[%.2f%%]" % m_score), (220, 20, 60), font=font)  # option 3
                 else:
